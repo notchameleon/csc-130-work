@@ -1,0 +1,100 @@
+package project1csc130;
+
+/*\
+ * Linked list of a stack.
+ */
+
+public class LinkedStack<T>{
+	
+	private Node<T> top;
+	private int size; // Keep track of how many nodes are in the linkedstack.
+	
+	
+	/*
+	 * Default constructor
+	 */
+	
+	
+	public LinkedStack() {
+		top = null;
+		size = 0;
+	}
+		
+	
+	/*
+	 * push()
+	 * Pushes an element onto the stack
+	 * @param element - the element to push.
+	 */
+	public void push(T data) 
+	{
+		Node<T> newNode = new Node<T>(data);
+		newNode.next = top;
+		top = newNode;
+		size++;
+	}
+	
+	
+	/*
+	 * pop()
+	 * Pops an element onto the stack
+	 * @return the top element
+	 * @throws EmptyStackException if stack is empty.
+	 */
+	
+	public T pop() throws EmptyStackException
+	{
+		if (isEmpty())
+		{
+			throw new EmptyStackException("Cannot pop from empty stack");
+		}
+		
+		T data = top.data;
+		top = top.next;
+		size--;
+		return data;
+		
+		
+		}
+	
+	/*
+	 * peek() - E
+	 * Peeks at top of the stack but only looks doesnt remove
+	 * @return the top element
+	 * @throws EmptyStackException if empty
+	 */
+	
+	
+	public T peek() throws EmptyStackException
+	{
+		if (isEmpty())
+		{
+			throw new EmptyStackException("Cannot fit in the stack");
+		}
+		return top.data;
+	}
+	
+	/*
+	 * isEmpty() - boolean
+	 * Determines whether if the stack is empty or full.
+	 * @return true if stack empty
+	 */
+	
+	public boolean isEmpty() 
+	{
+		return top == null;
+	}
+	
+	/*
+	 * Gets the size of the stack 
+	 * @return number of elements in the stack.
+	 */
+	
+	
+	public int size()
+	{
+		return size;
+	}
+
+
+}

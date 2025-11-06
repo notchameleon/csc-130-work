@@ -1,0 +1,58 @@
+package project2;
+
+/*
+ * 
+ * A generic node class for 
+ * linkedList & Linked QUeue implementations
+ * 
+ * @author Steff 
+ * 
+ * 
+ */
+
+public class Node<T>{
+	private T data;
+	private Node<T> next;
+	
+	
+	
+	/*
+	 * Node() - Default Constructor
+	 * an empty node with data reference null  and next null reference;
+	 * 
+	 */
+	public Node() 
+	{
+		data = null;
+		next = null;
+	}
+	
+	public Node( T element) 
+	{
+		data = element;
+		next = null;
+	}
+
+	public Node( T element , Node<T> nextNode)
+	{
+		data = element;
+		next = nextNode;
+	}
+	
+	
+	public T getData() 
+	{
+		return data;
+	}
+	
+	public Node<T> getNext() 
+	{
+		return next;
+	}
+	
+	public void setNext(Node<T> next) 
+	{
+		this.next = next;
+	}
+	
+}

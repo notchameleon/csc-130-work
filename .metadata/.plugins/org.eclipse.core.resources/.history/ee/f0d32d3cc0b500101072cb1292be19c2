@@ -1,0 +1,18 @@
+package project2;
+
+public abstract class Vehicle {
+	protected int hp;
+	protected boolean isActive;
+	
+	public Vehicle(int HP) 
+	{
+		hp = HP;	
+		this.isActive = true;
+	}
+	
+	public int getHp() 
+	{
+		return hp;
+	}
+	
+}

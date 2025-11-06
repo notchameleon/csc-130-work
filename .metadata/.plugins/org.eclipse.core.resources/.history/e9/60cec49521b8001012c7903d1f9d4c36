@@ -1,0 +1,30 @@
+package project2;
+
+public class Command {
+	private String operation;
+	private int value;
+	
+	public Command(String operation , int value)
+	{
+		this.operation = operation;
+		this.value = value;
+	}
+	
+	public String getOperation()
+	{
+		return operation;
+	}
+	
+	public int getValue()
+	{
+		return value;
+	}
+	
+	@Override 
+	public String toString()
+	{
+		return operation + " " + value;
+	}
+	
+	
+}

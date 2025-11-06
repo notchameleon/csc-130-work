@@ -1,0 +1,51 @@
+package project2;
+/*
+ * Reoresent a command in traffic sim file input
+ * Contains an aoperation and a value of execution
+ */
+
+public class Command {
+	private String operation;
+	private int value;
+	
+	
+	/*
+	 * Constructs a command with specified "m" for move "u" for undo 
+	 * and value
+	 * @param operation "m" or "u" move,undo
+	 * @param  value  the value associate with operation
+	 */
+	public Command(String operation , int value)
+	{
+		this.operation = operation;
+		this.value = value;
+	}
+	
+	/*
+	 * getOperation() - String
+	 * @return the operation  string
+	 */
+	
+	public String getOperation()
+	{
+		return operation;
+	}
+	
+	/*
+	 * getValue() - int
+	 * 	 * @return the value int
+	 */
+	
+	public int getValue()
+	{
+		return value;
+	}
+	
+	@Override 
+	public String toString()
+	{
+		return operation + " " + value;
+	}
+	
+	
+}

@@ -1,0 +1,38 @@
+package project2;
+
+public abstract class Vehicle {
+	protected int hp;
+	protected boolean isActive;
+	
+	
+	
+	/*
+	 * Parameterized constructor
+	 * @param HP, a new horsepower data assigned to the value hp;
+	 */
+	public Vehicle(int HP) 
+	{
+		hp = HP;	
+		this.isActive = true;
+	}
+	
+	public int getHp() 
+	{
+		return hp;
+	}
+	
+	
+	public boolean isActive() 
+	{
+		return isActive;
+	}
+	
+	public void setActive(boolean activity) 
+	{
+		isActive = activity;
+	}
+	
+	@Override
+	public abstract String toString();
+	
+}

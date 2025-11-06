@@ -1,0 +1,483 @@
+package project1csc130;
+
+import java.util.Scanner;
+
+import java.io.FileNotFoundException;
+import java.io.File;
+import java.util.Random;
+
+
+/**
+ * Traffic Simulation Program
+ * Simulates vehicle movement and collisions on a one-lane road
+ * @Steff
+ */
+
+
+public class TrafficSimulation {
+	private static final  Random random = new Random();
+     
+	public static void main(String[] args) throws FileNotFoundException {
+		// TODO Auto -generated method stub
+		//Scanner scanner = new Scanner(System.in);
+		
+		int[] movements = readMovementsFromFile("testInput.txt");
+		
+		Vehicle[] road = new Vehicle[8];// A one lane road - An array of vehicles
+		road[2] = new Car("red", 150, 2);
+		road[4] = new Bus(5000, 200, 4);
+		road[1] = new Car("blue", 120, 1);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//System.out.println("Enter the size of the road: ");
+		//int roadSize = scanner.nextInt();
+		
+		//populateRoad method
+		
+		
+		
+		System.out.println("=== TRAFFIC LANE ===\n");
+		 displayRoad(road);
+		 
+		 
+		 //testAll(road, 1);  // Test forward movement
+	     //testAll(road, -1); // Test backward movement
+	     //testAll(road, 0);  // Test no movement
+		 System.out.println("Movements to process: " + movements.length + " steps");
+		 
+		 //Process each amount of data 
+		 for (int step = 0; step < movements.length; step++) {
+	            System.out.println("\n=== STEP " + (step + 1) + " ===");
+	            System.out.println("Movement direction from file: " + movements[step] + 
+	                             " (" + getDirectionName(movements[step]) + ")\n");
+	            
+	            testAll(road, movements[step]);
+	        }
+		 
+		 System.out.println("\n=== SIMULATION COMPLETE ===");
+		 
+	}
+	
+	
+	/*
+	 * getDirectionName()
+	 * Convert direction integer - to a descriptive name
+	 * * String represetnation -1 = backward , 0 , stay , 1 = forward
+	 * @param direction ( the movement -1, 0 , 1)	 * 
+	 */
+	
+    public static String getDirectionName(int direction) {
+        if (direction == -1) return "BACKWARD";
+        if (direction == 0) return "STAY";
+        if (direction == 1) return "FORWARD";
+        return "UNKNOWN";
+    }
+
+    
+    
+	/*
+	 * handleCollision()
+	 * 
+	 * Handles basic collision logic
+	 * between the project of two vehicles
+	 according to project rules
+	 * 
+	 * @param moving The vehicle attempting to move
+	 * @param target The vehicle in the target position  
+	 * @param road The road array
+	 * @param oldPos Original position of moving vehicle
+	 * @param newPos Target position of moving vehicle
+	 */
+	
+	
+	public static void handleCollision(Vehicle moving, Vehicle target, Vehicle[] road, int oldPos, int newPos) 
+	{
+		//Validate inputs and conditions
+		if (moving == null || !moving.isActive())
+		{
+			return;
+		}
+		
+		
+		// Validate both vehicles are active and not null
+        if (target == null || !target.isActive())
+        {
+            // No collision, just move-  simple move.
+            road[oldPos] = null;
+            moving.setPosition(newPos);
+            road[newPos] = moving;
+            System.out.println("Outcome: Moved to empty position " + newPos);
+            return;
+        }
+        
+        
+        //Checks bounds
+        
+        if ( newPos < 0 || newPos >= road.length) 
+        {
+        	System.out.println("OUTCOME: Target position " + newPos + " is out of bounds");
+        	moving.setPosition(oldPos); //Revert to original position
+        	return;
+        }
+        
+        
+        
+        
+        
+		//CAR vs BUS  If car tries to move into bus's space, car must stop (bus stays)
+		
+		if (moving instanceof Car && target instanceof Bus) {
+            System.out.println("SCENARIO: Car vs Bus");
+            System.out.println("RULE: Car stops, Bus stays");
+            moving.setPosition(oldPos); // Car stays at orginal position
+            System.out.println("OUTCOME: Car returned to position " + oldPos);
+        }
+        
+        // SCENARIO 2: BUS vs CAR COLLISION  
+        // PDF Rule: If bus moves into car's space, bus pushes car out (car removed)
+        else if (moving instanceof Bus && target instanceof Car) {
+            System.out.println("SCENARIO: Bus vs Car");
+            System.out.println("RULE: Bus pushes Car out");
+            target.setActive(false); // Mark car as inactive (removed)
+            road[oldPos] = null;     // Remove bus from old position
+            moving.setPosition(newPos);
+            road[newPos] = moving;    // Bus takes the car's position
+            System.out.println("OUTCOME: Car removed, Bus now at position " + newPos);
+                    }
+        
+        // =========================================================================
+        // SCENARIO 3: CAR vs CAR COLLISION
+        // PDF Rules: 
+        // - Different colors: both removed, new random car added
+        // - Same color: higher horsepower survives
+        // =========================================================================
+        else if (moving instanceof Car && target instanceof Car) {
+            Car car1 = (Car) moving ;
+            Car car2 = (Car) target;
+            
+            System.out.println("SCENARIO: Car vs Car");
+            System.out.println("Colors: " + car1.getColor() + " vs " + car2.getColor());
+            System.out.println("Horsepower: " + car1.getHorsepower() + " vs " + car2.getHorsepower());
+            
+            if (!car1.getColor().equals(car2.getColor())) {
+                // PDF: Different colors -> both removed
+                System.out.println("RULE: Different colors - both removed");
+                car1.setActive(false);
+                car2.setActive(false);
+                road[oldPos] = null;
+                road[newPos] = null;
+                System.out.println("OUTCOME: Both cars removed from road");
+                // Note: New car placement would be implemented here
+                
+                addRandomCar(road);
+            } else {
+                // PDF: Same color -> compare horsepower
+                System.out.println("RULE: Same color - compare horsepower");
+                if (car1.getHorsepower() > car2.getHorsepower()) {
+                    car2.setActive(false);
+                    road[oldPos] = null;
+                    moving.setPosition(newPos);
+                    road[newPos] = moving;
+                    System.out.println("OUTCOME: Car1 (higher hp) survives");
+                } else if (car1.getHorsepower() < car2.getHorsepower()) {
+                    car1.setActive(false);
+                    road[oldPos] = null;
+                    System.out.println("OUTCOME: Car2 (higher hp) survives");
+                } else {
+                    System.out.println("OUTCOME: Equal horsepower - both remain");
+                    moving.setPosition(oldPos); 
+                }
+               
+            }
+        }
+        
+        // =========================================================================
+        // SCENARIO 4: BUS vs BUS COLLISION
+        // PDF Rule: Heavier bus survives, equal weight both remain
+        // =========================================================================
+        else if (moving instanceof Bus && target instanceof Bus) {
+            Bus bus1 = (Bus) moving;
+            Bus bus2 = (Bus) target;
+            
+            System.out.println("SCENARIO: Bus vs Bus");
+            System.out.println("Weights: " + bus1.getWeight() + "kg vs " + bus2.getWeight() + "kg");
+            System.out.println("RULE: Heavier bus survives");
+            
+            if (bus1.getWeight() > bus2.getWeight()) {
+            	// Moving Bus Survives
+                bus2.setActive(false);
+                road[oldPos] = null;
+                moving.setPosition(newPos);
+                road[newPos] = moving;
+                System.out.println("OUTCOME: Bus1 (heavier) survives");
+            } else if (bus1.getWeight() < bus2.getWeight()) {
+                //Target bus survives
+            	bus1.setActive(false);
+                road[oldPos] = null;
+                System.out.println("OUTCOME: Bus2 (heavier) survives");
+            } else {
+                System.out.println("OUTCOME: Equal weight - both remain");
+                moving.setPosition(oldPos); //MOVES BUS TO ORINGAL POSITION LIKE PDF
+            }
+        }
+    }
+	
+	
+	/**
+     * Adds a new random car to an empty position on the road
+     * Used for Car Collision.
+     * @param road Array to represent one lane.
+     */
+    private static void addRandomCar(Vehicle[] road) {
+        // Count empty positions
+        int emptyCount = 0;
+        for (int i = 0; i < road.length; i++) {
+            if (road[i] == null) {
+                emptyCount++;
+            }
+        }
+        
+        if (emptyCount == 0) {
+            System.out.println("No empty positions available for new car");
+            return;
+        }
+        
+        // Create array of empty positions
+        int[] emptyPositions = new int[emptyCount];
+        int index = 0;
+        for (int i = 0; i < road.length; i++) {
+            if (road[i] == null) {
+                emptyPositions[index++] = i;
+            }
+        }
+        
+        // Choose a random empty position
+        int randomIndex = random.nextInt(emptyCount);
+        int pos = emptyPositions[randomIndex];
+        
+        // Create a new random car
+        String[] colors = {"red", "blue", "green", "yellow", "black", "white"};
+        String color = colors[random.nextInt(colors.length)];
+        int horsepower = 100 + random.nextInt(151); // 100-250 horsepower
+
+        
+        road[pos] = new Car(color, horsepower, pos);
+        
+        
+        System.out.println("NEW CAR ADDED: " + road[pos] + " at position " + pos);
+    }
+    
+    
+    
+    
+    /**
+     * Processes movement for a single vehicle at 
+     * specified index and handles bounds & collision detection 
+     * @param Road array- represents one lane
+     * @param currPos, The current position in the road array 
+     * @param direction, Movement direction (-1 , 0 , 1)
+     */
+    private static void processVehicleMovement(Vehicle[] road, int currentPos, int direction) {
+        if (road[currentPos] != null && road[currentPos].isActive()) {
+            Vehicle v = road[currentPos];
+            int oldPos = v.getPosition();
+            
+            // Validate movement before executing
+            int newPos = oldPos + direction;
+            
+            // Check if movement is within bounds
+            if (newPos < 0 || newPos >= road.length) {
+                System.out.println(v + " cannot move " + getDirectionName(direction) + 
+                                 " from " + oldPos + " (out of bounds)");
+                return;
+            }
+            
+            // Only proceed if position actually changes
+            if (newPos != oldPos) {
+                System.out.print(v + " attempting to move from " + oldPos + " to " + newPos);
+                
+                // Check if new position has another vehicle (collision)
+                if (road[newPos] != null && road[newPos].isActive()) {
+                    System.out.println(" -> COLLISION!");
+                    handleCollision(v, road[newPos], road, oldPos, newPos);
+                } else {
+                    System.out.println(" -> OK\n");
+                    // No collision, update road array positions
+                    road[oldPos] = null;
+                    v.setPosition(newPos); // Update vehicle's position
+                    road[newPos] = v;
+                }
+            } else {
+                System.out.println(v + " stayed at position " + oldPos + "\n");
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    
+    /**
+     * Processes movement for all vehicles and handles collisions
+     * @param road The array representing the one-lane road
+     * @param direction Movement direction (-1: back, 0: stay, 1: forward)
+     */
+    public static void testAll(Vehicle[] road, int direction) {
+       //
+    	
+    	
+    	//Proccess in correct order 
+    	if (direction == 1) { // FORWARD - process from end to beginning
+            for (int i = road.length - 1; i >= 0; i--) {
+                processVehicleMovement(road, i, direction);
+            }
+        } else { // BACKWARD or STAY - process from beginning to end
+            for (int i = 0; i < road.length; i++) {
+                processVehicleMovement(road, i, direction);
+            }
+        }
+        
+        System.out.print("RESULT: ");
+        displayRoad(road);
+    }
+    
+    
+    
+    
+    
+    
+    
+	/*
+	 * Read movement values from input file {-1,0,1}
+	 * @param fileName name of file you are reading 
+	 * @throws FileNotFoundException if the specified file cannot be found
+	 * @return int Array that has data value size  from the file.
+	 *  
+	 */
+	
+	public static int[] readMovementsFromFile(String fileName) throws FileNotFoundException {
+		
+			
+		Scanner scanValues = new Scanner ( new File(fileName));
+		
+		
+		//Count how many values
+		int count = 0;
+		while (scanValues.hasNextInt())
+		{
+			scanValues.nextInt();
+			count++;
+		}
+		
+		scanValues.close();
+		
+		
+		//Read values
+		scanValues = new Scanner(new File(fileName));
+		int[] movements = new int[count];
+		for (int i = 0; i < count; i++)
+		{
+			movements[i] = scanValues.nextInt();
+		}
+		
+		scanValues.close();
+		return movements;
+		
+	}
+	
+	
+	
+	/*
+	 * Display the current road state 
+	 * @param road Array represents the one lane road.
+	 */
+	
+	public static void displayRoad(Vehicle[] road )
+	{
+		for (int i = 0; i < road.length; i++) 
+		{
+	        System.out.print("[" + i + "]");
+			if ( road[i] == null)
+			{
+				System.out.print("."); // NOT ANYTHING 
+			} else if ( road[i] instanceof Car) 
+					{
+					System.out.print("Car");
+					} else {
+						System.out.print("Bus");
+					}
+			}
+		System.out.println();
+		}
+	
+	
+	/*
+	 * getRoadSize() 
+	 * Gets the road size from user input
+	 * with validations default size is 5 .	  
+	 * @return valid road size
+	 */
+	
+	private static int getRoadSize() 
+	{
+		
+		
+		int roadSize = 5;
+		
+		try (Scanner scan = new Scanner(System.in);)
+		{
+			System.out.println("Enter road size:"); 
+			String input = scan.nextLine().trim();
+			
+			if (!input.isEmpty())
+			{
+				int userSize = Integer.parseInt(input);
+				
+				if (userSize >= 20)
+				{
+					roadSize = userSize;
+					System.out.println("Road size set to: " + roadSize);
+				} else
+				{
+					System.out.println("Invalid Size. Using default road size: 5");
+				}
+			} else {
+				System.out.println("Invalid Input. Using default road size: 5");
+			}
+		} catch (NumberFormatException ex) 
+		{
+			System.out.println("Invalid number format. Using default road size: 5");
+		} catch (Exception e)
+		{
+			System.out.println("Invalid Error. Using default road size: 5");
+		}
+		
+	
+	
+		return roadSize;
+	
+			}
+	
+	/*
+	 * intializeVehicle()
+	 * Positions are chosen to fit
+	 * 
+	 * 
+	 */
+	
+	
+	
+	
+	
+}
+	

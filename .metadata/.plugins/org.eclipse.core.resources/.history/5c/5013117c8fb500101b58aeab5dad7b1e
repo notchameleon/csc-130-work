@@ -1,0 +1,35 @@
+package project1csc130;
+
+public class Node<T>{
+	private T data;
+	private Node<T> next;
+	
+	/*
+	 * node() 
+	 * default constructor
+	 * 
+	 */
+	public Node() 
+	{
+		this.data = null;
+		this.next = null;
+	}
+	
+	/*
+	 * node(T element) 
+	 * assigns the element to the data reference
+	 * next is set to null.
+	 */
+	
+	public Node(T element)
+	{
+		this.data = element;
+		this.next = null;
+	}
+	
+	public Node(T element)
+	
+	
+	
+	
+}

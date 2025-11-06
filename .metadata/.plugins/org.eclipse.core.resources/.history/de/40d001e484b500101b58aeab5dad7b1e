@@ -1,0 +1,74 @@
+package project1csc130;
+
+/*\
+ * Linked list of a stack.
+ */
+
+public class LinkedStack {
+	
+	private Node<T> top;
+	private int size; // Keep track of how many nodes are in the linkedstack.
+	
+	private static class Node<T> {
+		private T data;
+		private Node<T> next;
+		
+		public Node(T data) 
+		{
+			this.data = data;
+			this.next = null;
+		}
+	}
+	
+	/*
+	 * Default constructor
+	 */
+	
+	
+	public LinkedStack() {
+		top = null;
+		size = 0;
+	}
+		
+	
+	/*
+	 * push()
+	 * Pushes an element onto the stack
+	 * @param element - the element to push.
+	 */
+	public void push(T element) 
+	{
+		Node<T> newNode = new Node<T>(element);
+		newNode.next = top;
+		top = newNode;
+		size++;
+	}
+	
+	
+	/*
+	 * pop()
+	 * Pops an element onto the stack
+	 * @return the top element
+	 * @throws EmptyStackException if stack is empty.
+	 */
+	
+	public T pop() throws EmptyStackException
+	{
+		if (isEmpty())
+		{
+			throw new EmptyStackException("Cannot pop from empty stack");
+		}
+		
+		T data = top.data;
+		top = top.next;
+		size--;
+		return data;
+		
+		
+		}
+	
+		
+		
+	}
+
+}

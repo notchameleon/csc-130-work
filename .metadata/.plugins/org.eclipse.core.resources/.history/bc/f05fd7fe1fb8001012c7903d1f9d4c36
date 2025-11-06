@@ -1,0 +1,30 @@
+package project2;
+
+public class Car extends Vehicle {
+	private String color;
+	
+	/*
+	 * Constructor 
+	 */
+	
+	
+	public Car(String color, int hp) 
+	{
+		super(hp);
+		this.color = color;
+	}
+	
+	public String getColor()
+	{
+		return color;
+	}
+	
+	public String toString() 
+	{
+		return "Car (color of car=" + color + ", hp =" + hp + ")";
+	}
+	
+	
+	
+	
+}

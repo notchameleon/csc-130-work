@@ -1,0 +1,29 @@
+package project2;
+
+public class Bus extends Vehicle {
+	private int weight;
+	
+	/*
+	 * Bus consstructor -
+	 * @param weight bus weight
+	 * @param hp bus hppower
+	 */
+	
+	public Bus(int weight, int hp) 
+	{
+	super(hp);
+	this.weight = weight;
+	}
+	
+	public int getWeight() 
+	{
+		return weight;
+	}
+	
+	public String toString() 
+	{
+		return "Bus (weight of bus=" + weight + ", hp = " + hp + ")";
+	}
+	
+	
+}

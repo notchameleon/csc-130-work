@@ -1,0 +1,10 @@
+package project2;
+import java.util.Scanner;
+
+public class MainTrafficSimulation {
+	private static final Random random = new Random();
+	public static void main(String[] args) 
+	{
+		Scanner scnr = new Scanner(System.in);
+	}
+}

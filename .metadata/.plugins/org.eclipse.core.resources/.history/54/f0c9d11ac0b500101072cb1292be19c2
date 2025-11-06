@@ -1,0 +1,10 @@
+package project2;
+
+public abstract class Vehicle {
+	protected int hp;
+	protected boolean isActive;
+	
+	public Vehicle(int HP) 
+	{
+		hp = HP;	}
+}

@@ -1,0 +1,45 @@
+package project2;
+
+public class LinkedStack<T>{
+	private Node<T> top;
+	private int size;
+	
+	public LinkedStack() 
+	{
+		top = null;
+		size = 0;
+	}
+	
+	/*
+	 * push(T element) - void
+	 * pushes an element on top of the linked stack.
+	 * @param element - new elementon the -stack.
+	 */
+	
+	public void push(T element)
+	{
+		Node<T> newNode = new Node<T>();
+		
+		newNode.setNext(top);
+		top = newNode;
+	}
+	
+	
+	
+	/*
+	 * pop() - T
+	 * removes the top most element in the top most position of the stack.
+	 * @throws EmptyStackException.
+	 */
+	public T pop() throws EmptyStackException
+	{
+		if (isEmpty()) 
+		{
+			throw new EmptyStackException("Cannot pop from empty stack");
+		}
+		
+		T data = top.getData();
+		
+	}
+
+}

@@ -1,0 +1,6 @@
+package project2;
+
+public class Bus extends Vehicle {
+	private int horsepower;
+	private boolean isActive;
+}

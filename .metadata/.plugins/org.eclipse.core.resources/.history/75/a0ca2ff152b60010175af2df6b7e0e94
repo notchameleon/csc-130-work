@@ -1,0 +1,38 @@
+package project2;
+
+public class LinkedQueue<T>{
+	private Node<T> front;
+	private Node<T> rear;
+	
+	
+	public LinkedQueue() 
+	{
+		front = null;
+		rear = null;
+	}
+	
+	/*
+	 * enqueue() - void
+	 * enqueues an item to the rear of the queue
+	 * @param T element element to enqueue in front of the rear.
+	 */
+	
+	public void enqueue(T element) 
+	{
+		Node<T> newNode =  new Node<T>(element);
+		
+		if (isEmpty())
+		{
+			front = newNode;
+			rear = newNode;
+		} 
+		
+		else 
+		
+		{
+			rear.setNext(newNode);
+			rear= newNode;
+		}
+	}
+	
+}

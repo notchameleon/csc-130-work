@@ -1,0 +1,169 @@
+package lab8;
+import lists.ArrayList;
+import lists.ArrayUnorderedList;
+import lists.ListADT;
+import lists.UnorderedListADT;
+import exceptionclasses.ElementNotFoundException;
+import exceptionclasses.EmptyListException;
+
+/*
+
+ 
+@authors Steffano & Ibrahim
+* N00982959, N00963924
+*/
+
+
+public class Lab8App {
+	public static void main(String[] args) {
+		ArrayUnorderedList<Product> list1 = new ArrayUnorderedList<Product>();
+		ArrayUnorderedList<Product> list2 = new ArrayUnorderedList<Product>(3);
+
+		System.out.println("The size of list1 is: " + list1.size());
+		System.out.println("The size of list2 is: " + list2.size());
+
+		list2.addToRear(new Product("456u78", 10, 5.0));
+		list2.addToRear(new Product("355d98", 7, 25.0));
+
+		System.out.println("\nThe size of list2 is: " + list2.size());
+		System.out.println(list2.toString());
+
+		list1.addToFront(new Product("243j58", 3, 10.0));
+
+		System.out.println("The size of list1 is: " + list1.size());
+		System.out.println(list1.toString());
+
+		list2.addToFront(new Product("264j45", 15, 13.5));
+
+		System.out.println("The size of list2 is: " + list2.size());
+		System.out.println(list2.toString());
+
+		list2.addToFront(new Product("147p34", 8, 4.5));
+
+		System.out.println("The size of list2 is: " + list2.size());
+		System.out.println(list2.toString());
+
+		list1 = new ArrayUnorderedList<Product>();
+
+		System.out.println("The size of list1 is: " + list1.size());
+		System.out.println(list1.toString());
+
+		try {
+			Product target = new Product();
+
+			target.setId("299p41");
+			list1.addAfter(new Product("653s12", 9, 12.6), target);
+
+		} catch (ElementNotFoundException ex) {
+			System.out.println(ex.toString());
+		}
+
+		try {
+			Product target = new Product();
+
+			target.setId("147p34");
+			list2.addAfter(new Product("123r98", 11, 1.5), target);
+			System.out.println("\nThe size of the list2: " + list2.size() + "\n" + list2.toString());
+
+		} catch (ElementNotFoundException ex) {
+			System.out.println(ex.toString());
+		}
+
+		try {
+			Product target = new Product();
+
+			target.setId("355d98");
+			list2.addAfter(new Product("321j78", 12, 2.99), target);
+			System.out.println("\nThe size of the list2: " + list2.size() + "\n" + list2.toString());
+
+		} catch (ElementNotFoundException ex) {
+			System.out.println(ex.toString());
+		}
+		
+		
+		try {
+			Product target = new Product();
+
+			target.setId("654f42");
+			list2.addAfter(new Product("321j78", 12, 2.99), target);
+			System.out.println("\nThe size of the list2: " + list2.size() + "\n" + list2.toString());
+
+		} catch (ElementNotFoundException ex) {
+			System.out.println(ex.toString());
+		}
+		
+		
+		// Test indexOf method
+		System.out.println("\n--- Testing indexOf method ---");
+
+		// Test on empty list
+		Product target = new Product();
+		target.setId("653s12");
+		System.out.println("Item with id " + target.getId() + " was found at index: " + list1.indexOf(target));
+
+		// Test on list with data
+		target.setId("147p34");
+		System.out.println("Item with id " + target.getId() + " was found at index: " + list2.indexOf(target));
+
+		// Additional indexOf tests
+		String[] testIds = {"321j78", "456u78", "357t31"};
+		for (String id : testIds) {
+		    target.setId(id);
+		    System.out.println("Item with id " + id + " was found at index: " + list2.indexOf(target));
+		}
+		
+		
+		// Test get method
+		System.out.println("\n--- Testing get method ---");
+
+		// Test on empty list
+		try {
+		    list1.get(0);
+		} catch (ArrayIndexOutOfBoundsException ex) {
+		    System.out.println(ex.toString());
+		}
+
+		// Test on list with data
+		int[] getIndices = {0, 5, 3, 10, -1};
+		for (int index : getIndices) {
+		    try {
+		        Product item = list2.get(index);
+		        System.out.println("The product at index " + index + " : " + item.toString());
+		    } catch (ArrayIndexOutOfBoundsException ex) {
+		        System.out.println(ex.toString());
+		    }
+		}
+
+		// Verify list wasn't modified
+		System.out.println("\nThe size of list2 is: " + list2.size());
+		System.out.println(list2.toString());
+		
+		// Test set method
+		System.out.println("\n--- Testing set method ---");
+
+		Product setProduct = new Product("482p74", 15, 12.99);
+
+		// Test on empty list
+		try {
+		    list1.set(0, setProduct);
+		} catch (ArrayIndexOutOfBoundsException ex) {
+		    System.out.println(ex.toString());
+		}
+
+		// Test on list with data
+		int[] setIndices = {0, 5, 3, 10, -1};
+		for (int index : setIndices) {
+		    try {
+		        list2.set(index, setProduct);
+		        System.out.println("The size of list2 is: " + list2.size());
+		        System.out.println(list2.toString());
+		    } catch (ArrayIndexOutOfBoundsException ex) {
+		        System.out.println(ex.toString());
+		    }
+		}
+		
+		//MISSING STEP 27
+		
+
+	}
+}

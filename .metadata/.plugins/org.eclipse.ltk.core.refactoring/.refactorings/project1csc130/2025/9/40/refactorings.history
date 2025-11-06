@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;stationary&apos; in &apos;project1csc130.TrafficSimulation.handleCollision(...)&apos; to &apos;target&apos;&#x0D;&#x0A;- Original project: &apos;project1csc130&apos;&#x0D;&#x0A;- Original element: &apos;project1csc130.TrafficSimulation.handleCollision(Vehicle, Vehicle, Vehicle[], int, int).stationary&apos;&#x0D;&#x0A;- Renamed element: &apos;stationary&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename local variable &apos;stationary&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src&lt;project1csc130{TrafficSimulation.java[TrafficSimulation~handleCollision~QVehicle;~QVehicle;~\[QVehicle;~I~I@stationary!2417!2434!2425!2434!QVehicle;!0!true" name="target" references="true" stamp="1759100994468" version="1.0"/>
+</session>

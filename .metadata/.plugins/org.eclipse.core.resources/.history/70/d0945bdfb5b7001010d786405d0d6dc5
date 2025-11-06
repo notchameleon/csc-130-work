@@ -1,0 +1,600 @@
+package project2;
+
+import java.util.Random;
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+
+
+/*
+ * 
+ * Road class that manages vehicle positions 
+ * & collisions.
+ */
+
+public class Road {
+	private Vehicle[] road;
+	private static final  Random random = new Random();
+	private LinkedStack<Vehicle[]> historyStack; // Undo functionality?
+	private LinkedQueue<Vehicle> crashedVehicles; //Reuse pool.
+
+	/*
+	 * Constructor for road
+	 * @param size number of positions in the road
+	 */
+
+	public Road(int size) 
+	{
+		road = new Vehicle[size];
+		historyStack = new LinkedStack<>();
+		crashedVehicles = new LinkedQueue<>();
+	}
+	
+	/*
+	 * 
+	 * getSize() - int
+	 * returns the 
+	 *amount of vehicles in the road array.
+	 */
+	
+	public int getSize()
+	{
+		return road.length;
+	}
+	
+	public boolean placeVehicle(int position, Vehicle vehicle)
+	{
+		if (position < 0 || position >= road.length || road[position] != null) 
+		{
+			return false;
+		}
+		road[position] = vehicle;
+		return true;
+	}
+	
+	
+	public Vehicle getVehicleAt(int position)
+	{
+		if ( position < 0 || position >= road.length)
+		{
+			return null;
+		}
+		return road[position];
+	}
+	
+	
+	/*
+	 * moveVehicle(int fromPosition, int toPosition) - 
+	 * 
+	 * Move a vehicle from one position
+	 * to another position.
+	 * @param fromPosition startingPosition.
+	 * @param toPosition targetPosition.
+	 * @return true if move was successful.
+	 */
+	
+	private boolean moveVehicle(int fromPosition, int toPosition)
+	{
+		if (fromPosition < 0 || fromPosition >= road.length || 
+				toPosition < 0 || toPosition >= road.length) 
+		{
+			return false;
+		}
+		
+		Vehicle vehicle = road[fromPosition];
+		if (vehicle == null || !vehicle.isActive())
+		{
+			return false;
+		}
+		
+		
+		road[fromPosition] = null;
+		road[toPosition] = vehicle;
+		return true;
+	}
+	
+	
+	
+	/*
+	 * processMovements(int dir) - void
+	 *@param dir, movement direction (-1 , 0 , 1)
+	 */
+	
+	public void processMovements(int steps)
+	{
+		
+		int direction = Integer.signum(steps);
+		int stepCount = Math.abs(steps);
+		
+		
+		for (int step = 0; step < stepCount; step++)
+		{
+			saveState();
+	
+		
+		System.out.println("\n---> Movement step " + (step + 1) + " of " + stepCount + " (" + getDirectionName(direction) + ")");
+		
+		
+		int[] desiredPositions = new int[road.length];
+		Arrays.fill(desiredPositions, -1);
+		
+		if (direction == 1) 
+		{
+			for (int i = road.length - 1; i >= 0; i--)
+			{
+				int newPos = i + direction;
+				if ( new Pos >= 0 && newPos < road.length) 
+				{
+					desiredPosition[i] = newPos;
+				}
+			}
+		}	
+	} else {
+			for (int i = 0; i < road.length; i++)
+			{
+				if (road[i] != null && raod[i].isActive())
+				{
+					int newPos = i + direction;
+					if ( newPos >= 0 && newPos < road.length) 
+					{
+						desiredPositions[i] = newPos;
+					}
+			}
+		}
+	}
+}
+	
+	
+	/*
+	 * 
+	 * getDirectionname() - String
+	 * Convert direction integer to descripitive name.
+	 */
+	
+
+    public static String getDirectionName(int direction) {
+        if (direction == 1) return "FORWARD";
+        if (direction == 0) return "STAY";
+        if (direction == -1) return "BACKWARD";
+        return "UNKNOWN";
+    }
+	
+	
+	
+	
+	/*
+	 * processSingleMovement(Vehicle[] snapshot, int currentPos , int dir) - void
+	 * @param snapshot snapshot of road state before movements
+	 * @param currenntPos current position in the road state.
+	 * @param dir movement direction 
+	 * 
+	 */
+	
+	private void processingSingleMovement(Vehicle[] snapshot, int currentPos, int dir)
+	{
+		Vehicle movingVehicle = snapshot[currentPos];
+		if (movingVehicle == null || !movingVehicle.isActive())
+		{
+			return;
+		}
+		
+		int newPos = currentPos + dir;
+		//Check bounds
+		
+		if (newPos < 0 || newPos >= road.length)
+		{
+			System.out.println(movingVehicle + " cannot move " + getDirectionName(dir) + " from " + currentPos + " (out of bounds)\n");
+			return;
+		}
+		
+		
+		//Check if position actually changes
+		
+		if (newPos == currentPos)
+		{
+			System.out.println( movingVehicle + " stayed at position " + currentPos);
+			return;
+		}
+		
+		
+		Vehicle targetVehicle = snapshot[newPos];
+		System.out.print(movingVehicle + "attemping to move from " + currentPos + " to " + newPos);
+		
+		
+		if (targetVehicle != null && targetVehicle.isActive())
+		{
+			System.out.println(" ---> COLLISION MATE!\n");
+			handleCollision(movingVehicle, targetVehicle, currentPos, newPos);
+		} else {
+			System.out.println(" ----> OK MATE!\n");
+			moveVehicle(currentPos, newPos);
+		}
+	}
+	
+	
+	/*
+	 * Handle collision between two vehicle
+	 * 
+	 */
+	private void handleCollision(Vehicle moving, Vehicle target, int oldPos, int newPos)
+	{
+		//CAR vs BUS  If car tries to move into bus's space, car must stop (bus stays)
+		
+				if (moving instanceof Car && target instanceof Bus) 
+				{
+		            System.out.println("SCENARIO: Car vs Bus");
+		            System.out.println("RULE: Car stops, Bus stays");
+		            System.out.println("OUTCOME: Car returned to position " + oldPos);
+		        }
+		        
+		        // SCENARIO 2: BUS vs CAR COLLISION  
+		        // PDF Rule: If bus moves into car's space, bus pushes car out (car removed)
+		        else if (moving instanceof Bus && target instanceof Car) 
+		        {
+		            System.out.println("SCENARIO: Bus vs Car");
+		            System.out.println("RULE: Bus pushes Car out");
+		            target.setActive(false); // Mark car as inactive (removed)
+		            moveVehicle(oldPos, newPos);
+		            System.out.println("OUTCOME: Car removed, Bus now at position " + newPos);
+		        }
+		        
+		        // =========================================================================
+		        // SCENARIO 3: CAR vs CAR COLLISION
+		        // PDF Rules: 
+		        // - Different colors: both removed, new random car added
+		        // - Same color: higher horsepower survives
+		        // =========================================================================
+		        else if (moving instanceof Car && target instanceof Car) 
+		        {
+		            Car car1 = (Car) moving ;
+		            Car car2 = (Car) target;
+		            
+		            System.out.println("SCENARIO: Car vs Car");
+		            System.out.println("Colors: " + car1.getColor() + " vs " + car2.getColor());
+		            System.out.println("Horsepower: " + car1.getHp() + " vs " + car2.getHp());
+		            
+		            if (!car1.getColor().equals(car2.getColor())) 
+		            {
+		                // PDF: Different colors -> both removed
+		                System.out.println("RULE: Different colors - both removed");
+		                car1.setActive(false);
+		                car2.setActive(false);
+		                
+		                addToCrashedPool(car1);
+		                addToCrashedPool(car2);
+		                
+		                road[oldPos] = null;
+		                road[newPos] = null;
+		                System.out.println("OUTCOME: Both cars removed from road");
+		                // Note: New car placement would be implemented here
+		                
+		                addRandomCar();
+		            } else 
+		            {
+		                // PDF: Same color -> compare horsepower
+		                System.out.println("RULE: Same color - compare horsepower");
+		                if (car1.getHp() > car2.getHp()) 
+		                {
+		                    target.setActive(false);
+		                    moveVehicle(oldPos,newPos);
+		                    System.out.println("OUTCOME: Car1 (higher hp) survives");
+		                } else if (car1.getHp() < car2.getHp()) 
+		                {
+		                    moving.setActive(false);
+		                    road[oldPos] = null;
+		                    System.out.println("OUTCOME: Car2 (higher hp) survives");
+		                } 
+		                else 
+		                {
+		                    System.out.println("OUTCOME: Equal horsepower - both remain");
+		                    }
+		               
+		            }
+		        }
+		        
+		        // =========================================================================
+		        // SCENARIO 4: BUS vs BUS COLLISION
+		        // PDF Rule: Heavier bus survives, equal weight both remain
+		        // =========================================================================
+		        else if (moving instanceof Bus && target instanceof Bus) 
+		        {
+		            Bus bus1 = (Bus) moving;
+		            Bus bus2 = (Bus) target;
+		            
+		            System.out.println("SCENARIO: Bus vs Bus");
+		            System.out.println("Weights: " + bus1.getWeight() + "kg vs " + bus2.getWeight() + "kg");
+		            System.out.println("RULE: Heavier bus survives");
+		            
+		            if (bus1.getWeight() > bus2.getWeight()) 
+		            {
+		            	// Moving Bus Survives
+		                target.setActive(false);
+		                moveVehicle(oldPos, newPos);
+		                System.out.println("OUTCOME: Bus1 (heavier) survives");
+		            } else if (bus1.getWeight() < bus2.getWeight()) 
+		            {
+		                 //Target bus survives
+		            	moving.setActive(false);
+		                road[oldPos] = null;
+		                System.out.println("OUTCOME: Bus2 (heavier) survives");
+		            } else 
+		            {
+		                System.out.println("OUTCOME: Equal weight - both remain");
+		            }
+		        }
+		    }
+	
+	
+	/*
+	 * 
+	 * findEmptyPosition() - int
+	 * Helper method to find empty position 
+	 */
+	
+	private int findEmptyPosition() 
+	{
+		for (int i = 0; i < road.length; i++)
+		{
+			if (road[i] == null)
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	
+	
+	
+	/*
+	 * addRandomCar() - void
+	 * Adds a random car to an empty position
+	 */
+	
+	
+	private void addRandomCar() 
+	{
+		
+		Vehicle reusedVehicle = getFromCrashPool();
+		if ( reusedVehicle != null && reusedVehicle instanceof Car)
+		{
+			//Place the reused vehicle
+			int emptyPos = findEmptyPosition();
+			if (emptyPos != -1)
+			{
+				road[emptyPos] = reusedVehicle;
+				System.out.println("PLACED REUSED CAR: " + reusedVehicle + " at position " + emptyPos);
+				return;
+			}
+		}
+		
+		
+		
+		
+		int emptyCount = 0;
+        for (int i = 0; i < road.length; i++) 
+        {
+            if (road[i] == null) 
+            {
+                emptyCount++;
+            }
+        }
+        
+        if (emptyCount == 0) 
+        {
+            System.out.println("No empty positions available for new car");
+            return;
+        }
+        
+        // Create array of empty positions
+        int[] emptyPositions = new int[emptyCount];
+        int index = 0;
+        for (int i = 0; i < road.length; i++) 
+        {
+            if (road[i] == null) 
+            {
+                emptyPositions[index++] = i;
+            }
+        }
+        
+        // Choose a random empty position
+        int randomIndex = random.nextInt(emptyCount);
+        int pos = emptyPositions[randomIndex];
+        
+        // Create a new random car
+        String[] colors = {"red", "blue", "green", "yellow", "black", "white"};
+        String color = colors[random.nextInt(colors.length)];
+        int horsepower = 100 + random.nextInt(151); // 100-250 horsepower
+
+        
+        road[pos] = new Car(color, horsepower);
+        
+        
+        System.out.println("NEW CAR ADDED: " + road[pos] + " at position " + pos);
+
+	}
+	
+	
+	/*	saveState() - void
+	 * Save current road state to history stack
+	 * 
+	 */
+	
+	public void saveState() 
+	{
+		//Deep copy of the current road
+		
+		Vehicle[] snapshot = new Vehicle[road.length];
+		
+		for ( int i = 0; i < road.length; i++)
+		{
+			if (road[i] != null)
+			{
+				if (road[i] instanceof Car)
+				{
+					Car car = (Car) road[i];
+					snapshot[i] = new Car( car.getColor(), car.getHp());
+					snapshot[i].setActive(car.isActive());
+				} 
+				else if (road[i] instanceof Bus)
+				{
+					Bus bus = (Bus) road[i];
+					snapshot[i] = new Bus(bus.getWeight(), bus.getHp());
+					snapshot[i].setActive(bus.isActive());
+				}
+			} else {
+				snapshot[i] = null;
+			}
+		}
+		historyStack.push(snapshot);
+	}
+	
+	
+	
+	
+	
+	/*
+	 * undo() - void
+	 * Undo specified number of steps
+	 */
+	
+	public void undo(int steps)
+	{
+		System.out.println("UNDOING " + steps + " STEPS(S)");
+		
+		for ( int i = 0; i < steps; i++)
+		{
+			try
+			{
+				Vehicle[] previousState = historyStack.pop();
+				//Restore previous state
+				for (int j = 0; j < road.length; j++)
+				{
+					road[j] = previousState[j];
+				}
+			
+				System.out.println("Restored state from step " + (steps - i));
+			} catch (EmptyStackException e) 
+			{
+				System.out.println("Cannot undo - no more history available");
+				break;
+			}
+		}
+		displayRoad();
+	}
+	
+	
+	/*
+	 * addToCrashedPool(Vehicle vehicle) - void 
+	 * Add crashed vehicle to reuse pool
+	 * @param vehicle - the elemt of vehicle added.
+	 * 
+	 */
+	
+	private void addToCrashedPool(Vehicle vehicle) 
+	{
+		crashedVehicles.enqueue(vehicle);
+		System.out.println("added " + vehicle + " to crashed vehicle pool");
+	}
+	
+	
+	/*
+	 * getFromCrashedPool() - Vehicle
+	 * Get vehicle from reuse pool , or create new one if pool is empty.
+	 */
+	
+	private Vehicle getFromCrashPool() 
+	{
+		try 
+		{
+			Vehicle reused = crashedVehicles.dequeue();
+			reused.setActive(true); // Reactivate the vehicle
+			System.out.println("Reusing vehicle from pool: " + reused);
+			return reused;
+		} catch (EmptyQueueException e) 
+		{
+			System.out.println("Crashed vehicle pool is empty - creating new vehicles");
+			return null;
+		}	
+	}
+	
+	public static void processCommandsFromFile(Road road, String fileName) throws FileNotFoundException {
+	
+		try {
+		Scanner scnr = new Scanner(new File(fileName));
+
+		int step = 1;
+		System.out.println("\n--- PROCESSING COMMANDS ---");
+		
+		
+		while (scnr.hasNext())
+		{			
+			String operation = scnr.next();
+
+			if (!scnr.hasNextInt())
+			{
+				System.out.println("Error: Missing number after " + operation);
+				break;
+			}
+		
+		
+		int value = scnr.nextInt();
+		
+		System.out.println("\n--- STEP " + step + " ---");
+		System.out.println("Command: " + operation + " " + value);
+		
+		if (operation.equals("m")) {
+            System.out.println("ACTION: Move " + value + "spaces"
+            		+ (value > 0 ? "Forward" : value < 0 ? "BACKWARD" : "STAY"));
+           road.processMovements(value);
+        } else if (operation.equals("u")) {
+            System.out.println("ACTION: Undo " + value + " step(s)");
+            road.undo(value);
+        } else {
+            System.out.println("ERROR: Unknown command '" + operation + "'");
+        }
+		
+		road.displayRoad();
+		step++;
+	}
+	
+		scnr.close();
+		System.out.println("\nProcessed " + (step-1) + " commands");
+	} catch (FileNotFoundException e) {
+		System.out.println("Error: File " + fileName + "not found");
+	}
+}
+	
+	
+	
+	
+	
+	
+	/*
+	 * 
+	 * Display the current road state
+	 */
+	
+	
+	public  void displayRoad()
+	{
+		System.out.println("\nTHE ROAD: ");
+		for (int i = 0; i < road.length; i++) 
+		{
+	        System.out.print("[" + i + "]");
+			if (this.road[i] == null)
+			{
+				System.out.print("."); // NOT ANYTHING 
+			} else if ( this.road[i] instanceof Car) 
+					{
+					System.out.print("Car");
+					} else {
+						System.out.print("Bus");
+					}
+			System.out.print(" ");
+			}
+		System.out.println();
+		}
+
+	
+}

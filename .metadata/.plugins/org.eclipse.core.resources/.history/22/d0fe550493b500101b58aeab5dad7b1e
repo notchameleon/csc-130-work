@@ -1,0 +1,81 @@
+package project1csc130;
+
+public class Node<T>{
+	private T data;
+	private Node<T> next;
+	
+	/*
+	 * node() 
+	 * default constructor
+	 * 
+	 */
+	public Node() 
+	{
+		data = null;
+		next = null;
+	}
+	
+	/*
+	 * node(T element) 
+	 * assigns the element to the data reference
+	 * next is set to null.
+	 * @param element - the value that is stored in node
+	 */
+	
+	public Node(T element)
+	{
+		data = element;
+		next = null;
+	}
+	
+	
+	/*
+	 * parameterized constructor - 
+	 * initalizes data - new element
+	 * intializes next - reference to the next node.
+	 * @param element - the object reference to store in the node.
+	 * @param nextItem - reference to the next node in the list.
+	 */
+	
+	public Node(T element, Node<T> nextItem)
+	{
+		data = element;
+		next = nextItem;
+	}
+	
+	/*
+	 * setItem - stores a new value in data.
+	 *@param newElement the object reference to be stored in the node
+	 */
+	public void setItem(T newElement)
+	{
+		data = newElement;
+	}
+	
+	
+	/*
+	 * setNext() - void
+	 * stores a new value in next
+	 * @param nextItem the reference to be stored in the next.
+	 * 
+	 */
+	public void setNext(Node<T> nextItem)
+	{
+		next = nextItem;
+	}
+	
+	/**
+	   * getNext - returns the reference stored in next
+	   * @return the reference stored in next
+	   */
+	  public Node<T> getNext()
+	  {
+	    return next;
+	  }
+	
+	
+	
+	
+	
+	
+}

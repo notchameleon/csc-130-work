@@ -1,0 +1,36 @@
+package project1csc130
+
+
+
+/*
+ * Linked list of a queue.
+ */
+
+public class LinkedQueue <T>{
+	private Node<T> front;
+	private Node<T> rear;
+	
+	private int size; 
+	
+	private static class Node<T> {
+		
+		private T data;
+		private Node<T> next;
+		
+		public Node (T element){
+			
+			this.data = element;
+			this.next = null;
+		}
+	}
+
+	
+	public LinkedQueue() {
+		front = rear = null;
+		
+	}
+	
+	
+	
+	
+}

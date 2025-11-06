@@ -1,0 +1,5 @@
+package exceptionclasses;
+
+public class ElementNotFoundException {
+
+}

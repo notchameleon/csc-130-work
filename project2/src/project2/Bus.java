@@ -1,0 +1,45 @@
+package project2;
+
+/*
+ * Represents a bus vehicle with weight attribute
+ * extends Vehicle abstract class
+ * 
+ * @author steff
+ */
+public class Bus extends Vehicle {
+	private int weight;
+	
+	/*
+	 * Bus constructor - sets a weight and horsepower to a bus
+	 * @param weight bus weight
+	 * @param hp bus horsepower
+	 */
+	
+	public Bus(int weight, int hp) 
+	{
+	super(hp);
+	this.weight = weight;
+	}
+	/*
+	 * 
+	 * getWeight() - int
+	 * @returns the weight of the bus
+	 */
+	
+	
+	public int getWeight() 
+	{
+		return weight;
+	}
+	
+	/*
+	 * Retruns a string representation of the bus
+	 * @return the String representatino of bus
+	 */
+	public String toString() 
+	{
+		return "Bus (weight of bus=" + weight + ", hp =" + hp + ")";
+	}
+	
+	
+}

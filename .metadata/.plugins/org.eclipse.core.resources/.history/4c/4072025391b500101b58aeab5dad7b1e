@@ -1,0 +1,64 @@
+package project1csc130
+
+
+
+/*
+ * Linked list of a queue.
+ */
+
+public class LinkedQueue <T>{
+	private Node<T> front;
+	private Node<T> rear;
+	
+	private int size; 
+	
+	private static class Node<T> {
+		
+		private T data;
+		private Node<T> next;
+		
+		public Node (T element){
+			
+			this.data = element;
+			this.next = null;
+		}
+	}
+
+	
+	/*
+	 * default constructor - creates an empty queue
+	 * sets front and rear = null. &
+	 * size = 0.
+	 * 
+	 */
+	
+	public LinkedQueue() {
+		front = rear = null;
+		size = 0;
+	}
+	
+	/*
+	 * enqueue() - void
+	 * Adds speicified element into the rear of the queue.
+	 * @param element - item to add inside of it.
+	 */
+	
+	
+	public void enqueue(T element) {
+		Node<T> loc = new Node<T>(element);
+		
+		
+		//When Queue is empty (adds first element - both pointerrs are referenced to queue.)
+		if (isEmpty())
+		{
+			front = loc;
+			rear = loc;
+		} else
+		{
+			rear.setNext(loc);
+		
+		
+		}
+	}
+	
+}
