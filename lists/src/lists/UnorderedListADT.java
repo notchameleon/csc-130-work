@@ -3,8 +3,8 @@ package lists;
 /**
  * UnorderedListADT.java
  * Defines the interface to an unordered list collection. Elements
- * can be stored in any order. 
- * 
+ * can be stored in any order.
+ *
  * @author Lewis/Chase
  */
 public interface UnorderedListADT<E> extends ListADT<E>

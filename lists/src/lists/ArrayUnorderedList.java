@@ -1,5 +1,5 @@
 package lists;
-import exceptionclasses.*;
+import exceptionclasses.ElementNotFoundException;
 
 /**
  * <p>Title: ArrayUnorderedList.java</p>
@@ -33,11 +33,12 @@ implements UnorderedListADT<E>
 
     /**
      * addToFront --
-     * Adds the specified item to the front of this list, expanding 
+     * Adds the specified item to the front of this list, expanding
      * the capacity of this list if necessary.
      * @param item a reference to the item to be added
      */
-    public void addToFront (E item)
+    @Override
+	public void addToFront (E item)
     {
         if (count == contents.length) {
             expandCapacity();
@@ -45,59 +46,62 @@ implements UnorderedListADT<E>
 
         for (int i = count; i > 0; i--) {
             contents[i] = contents[i-1];
-            
+
         }
-        
+
         contents[0] = item;
         count++;
     }
 
     /**
      * addToRear --
-     * Adds the specified item to the rear of this list, expanding 
+     * Adds the specified item to the rear of this list, expanding
      * the capacity of this list if necessary.
      * @param item a reference to the item to be added
      */
-    public void addToRear (E item)
+    @Override
+	public void addToRear (E item)
     {
-        if (count == contents.length)
-            expandCapacity();
+        if (count == contents.length) {
+			expandCapacity();
+		}
         contents[count] = item;
         count++;
     }
 
     /**
      * addAfter --
-     * Adds the specified item after the specified target, expanding 
+     * Adds the specified item after the specified target, expanding
      * the capacity of this list if necessary. The original
      * ordering of the items in the list will be maintained.
      * @param item a reference to the new item to be added
      * @param target a reference to the target
      * @throws an ElementNotFoundException if the target is not found
      */
-    public void addAfter (E item, E target) throws ElementNotFoundException
+    @Override
+	public void addAfter (E item, E target) throws ElementNotFoundException
     {
         if (count == contents.length) {
             expandCapacity();
         }
-        
+
         int value = this.find(target);
         if (value == -1) {
             throw new ElementNotFoundException("target is not in the list");
         }
-        
+
         // Shift elements to make space
         for (int i = count; i > value + 1; i--) {
             contents[i] = contents[i - 1];
         }
-        
+
         contents[value + 1] = item;
         count++;
     }
 
     /**
      * indexOf --
-     * Uses the find method to locate the target. 
+     * Uses the find method to locate the target.
      * @param target a reference to the target
      * @return the index of the specified target if it is found; -1 if it
      * is not found
@@ -113,7 +117,7 @@ implements UnorderedListADT<E>
      * it is in the proper range (0 - (count-1)).
      * @param index the index of the item to be returned
      * @return the item located at the specified index if it is found
-     * @throws an ArrayIndexOutOfBoundsException if the index is invalid or the list 
+     * @throws an ArrayIndexOutOfBoundsException if the index is invalid or the list
      * is empty
      */
     public E get(int index)

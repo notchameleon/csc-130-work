@@ -1,10 +1,10 @@
 package lists;
 /**
- * ListADT.java       
+ * ListADT.java
  * Defines the interface to a general list collection. Specific
  * types of lists will extend this interface to complete the
  * set of necessary operations.
- * 
+ *
  * @author Lewis/Chase
  */
 public interface ListADT<E>
@@ -34,5 +34,6 @@ public interface ListADT<E>
 	public int size();
 
 	/**  Returns a string representation of this list. */
+	@Override
 	public String toString();
 }

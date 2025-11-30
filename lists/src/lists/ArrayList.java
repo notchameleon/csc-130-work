@@ -1,12 +1,13 @@
 package lists;
-import exceptionclasses.*;
+import exceptionclasses.ElementNotFoundException;
+import exceptionclasses.EmptyListException;
 /**
  * <p>Title: ArrayList.java</p>
  *
  * <p>Description: Represents an array implementation of a list. The front of
  * the list is kept at array index 0. This class will be extended
  * to create a specific kind of list.</p>
- * 
+ *
  */
 public class ArrayList<E> implements ListADT<E>
 {
@@ -30,7 +31,7 @@ public class ArrayList<E> implements ListADT<E>
    * creates an empty list using the specified capacity.
    * @param initialCapacity the initial size of the list as specified by the user
    */
-  @SuppressWarnings("unchecked") 
+  @SuppressWarnings("unchecked")
   public ArrayList (int initialCapacity)
   {
       count = 0;
@@ -38,15 +39,17 @@ public class ArrayList<E> implements ListADT<E>
   }
 
   /**
-   * removeLast -- 
+   * removeLast --
    * removes and returns the last item in this list.
    * @return a reference to what was the last item in the list
    * @throws EmptyListException if the list is empty
    */
-  public E removeLast () throws EmptyListException
+  @Override
+public E removeLast () throws EmptyListException
   {
-    if (isEmpty())
-       throw new EmptyListException ("ArrayList is empty!");
+    if (isEmpty()) {
+		throw new EmptyListException ("ArrayList is empty!");
+	}
 
     count--;
     E result = contents[count];
@@ -55,23 +58,25 @@ public class ArrayList<E> implements ListADT<E>
   }
 
   /**
-   * removeFirst -- 
+   * removeFirst --
    * removes and returns the first element in this list.
    * @return a reference to what was the first item in the list
    * @throws EmptyListException if the list is empty
    */
-  public E removeFirst()
+  @Override
+public E removeFirst()
   {
-	  if (isEmpty())
-	        throw new EmptyListException("ArrayList is empty!");
-	    
+	  if (isEmpty()) {
+		throw new EmptyListException("ArrayList is empty!");
+	  }
+
 	    E result = contents[0];
-	    
+
 	    // Shift all elements left
 	    for (int i = 0; i < count - 1; i++) {
 	        contents[i] = contents[i + 1];
 	    }
-	    
+
 	    count--;
 	    return result;
 }
@@ -83,20 +88,21 @@ public class ArrayList<E> implements ListADT<E>
    * @return a reference to the item removed from the list
    * @throws ElementNotFoundException if the target is not in the list
    */
-  public E remove (E target)
+  @Override
+public E remove (E target)
   {
 	  int index = find(target);
 	    if (index == -1) {
 	        throw new ElementNotFoundException("target is not in the list");
 	    }
-	    
+
 	    E result = contents[index];
-	    
+
 	    // Shift elements left
 	    for (int i = index; i < count - 1; i++) {
 	        contents[i] = contents[i + 1];
 	    }
-	    
+
 	    count--;
 	    return result;
   }
@@ -108,10 +114,12 @@ public class ArrayList<E> implements ListADT<E>
    * @return a reference to the first item in the list
    * @throws EmptyListException if the list is empty
    */
-  public E first() throws EmptyListException
+  @Override
+public E first() throws EmptyListException
   {
-      if (isEmpty())
-         throw new EmptyListException  ("ArrayList is empty!");
+      if (isEmpty()) {
+		throw new EmptyListException  ("ArrayList is empty!");
+	  }
 
       return contents[0];
   }
@@ -123,10 +131,12 @@ public class ArrayList<E> implements ListADT<E>
    * @return a reference to the last item in the list
    * @throws EmptyListException if the list is empty
    */
-  public E last()
+  @Override
+public E last()
   {
-      if (isEmpty())
-         throw new EmptyListException ("ArrayList is empty!");
+      if (isEmpty()) {
+		throw new EmptyListException ("ArrayList is empty!");
+	  }
 
       return contents[count-1];
   }
@@ -137,7 +147,8 @@ public class ArrayList<E> implements ListADT<E>
    * @param target a reference to the item to be located
    * @return true if the target is found; false otherwise
    */
-  public boolean contains (E target)
+  @Override
+public boolean contains (E target)
   {
       return find(target) != -1;
   }
@@ -151,9 +162,11 @@ public class ArrayList<E> implements ListADT<E>
    */
   protected int find (E target)
   {
-      for (int i=0; i<count; i++)
-        if (target.equals(contents[i]))
-               return i;
+      for (int i=0; i<count; i++) {
+		if (target.equals(contents[i])) {
+			return i;
+		}
+	  }
 
       return -1;
   }
@@ -163,7 +176,8 @@ public class ArrayList<E> implements ListADT<E>
    * determines whether or not the list is empty.
    * @return true if this list is empty; false otherwise
    */
-  public boolean isEmpty()
+  @Override
+public boolean isEmpty()
   {
       return count == 0;
   }
@@ -173,7 +187,8 @@ public class ArrayList<E> implements ListADT<E>
    * returns a count of the number of items in this list.
    * @return the number of items currently in the list
    */
-  public int size()
+  @Override
+public int size()
   {
       return count;
   }
@@ -183,12 +198,14 @@ public class ArrayList<E> implements ListADT<E>
    * returns a string representation of this list.
    * @return a reference to a String containing the items in the list
    */
-  public String toString()
+  @Override
+public String toString()
   {
       String result = "";
 
-      for (int i=0; i < count; i++)
-         result = result + contents[i].toString() + "\n";
+      for (int i=0; i < count; i++) {
+		result = result + contents[i].toString() + "\n";
+	  }
 
       return result;
   }
@@ -203,8 +220,9 @@ public class ArrayList<E> implements ListADT<E>
   {
       E[] larger = (E[])(new Object[contents.length*2]);
 
-      for (int i=0; i < count; i++)
-         larger[i] = contents[i];
+      for (int i=0; i < count; i++) {
+		larger[i] = contents[i];
+	  }
 
       contents = larger;
   }
